@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+// App.js
 
-function App() {
+import React, { useState } from 'react';
+import { Container } from 'react-bootstrap';
+import LoginForm from './components/LoginForm';
+import QuestionContainer from './components/QuestionContainer';
+
+const App = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [loggedIn, setLoggedIn] = useState(false); // Set initial state to false
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    if (username && password) {
+      // Implement login logic here
+      setLoggedIn(true);
+    }
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Container>
+        {!loggedIn ? (
+            <LoginForm
+                username={username}
+                password={password}
+                setUsername={setUsername}
+                setPassword={setPassword}
+                handleLogin={handleLogin}
+            />
+        ) : (
+            <QuestionContainer />
+        )}
+      </Container>
   );
-}
+};
 
 export default App;
