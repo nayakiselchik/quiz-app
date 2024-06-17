@@ -4,18 +4,20 @@ import he from 'he';
 
 const LoginForm = ({ username, password, setUsername, setPassword, handleLogin }) => {
     const [usernameError, setUsernameError] = useState('');
-
     const handleUsernameChange = (value) => {
         // Sanitize input using he library
         const sanitizedUsername = he.encode(value);
         setUsername(sanitizedUsername);
-        // Basic validation for English characters
-        if (!/^[a-zA-Z0-9]*$/.test(value)) {
+
+        // Updated validation for English and Ukrainian characters
+        const validCharacters = /^[a-zA-ZА-Яа-яЁёЄєЇїҐґІі0-9]*$/;
+        if (!validCharacters.test(value)) {
             setUsernameError('Username must contain only English letters and numbers.');
         } else {
             setUsernameError('');
         }
     };
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
