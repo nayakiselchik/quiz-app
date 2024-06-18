@@ -29,8 +29,9 @@ const LoginForm = ({ username, password, setUsername, setPassword, handleLogin }
         }
     };
 
-    return ( //Реакт-бутстрап
-        <Form onSubmit={handleSubmit}>
+    return (
+        <Form onSubmit={handleSubmit} className="p-4 mt-3 border rounded" style={{maxWidth: '400px', margin: 'auto'}}>
+            <h2 className="mb-4 text-center">Login</h2>
             <Form.Group>
                 <Form.Label>Username</Form.Label>
                 <Form.Control
@@ -53,7 +54,7 @@ const LoginForm = ({ username, password, setUsername, setPassword, handleLogin }
                     required
                 />
             </Form.Group>
-            <Button type="submit">Login</Button>
+            <Button variant="primary" type="submit" className="mt-3 w-100">Login</Button>
         </Form>
     );
 };

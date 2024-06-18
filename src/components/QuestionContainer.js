@@ -90,7 +90,7 @@ const QuestionContainer = () => {
     const { question, shuffled_answers } = currentQuestionData;
 
     return (
-        <Card>
+        <Card bg="light" text="dark" className="p-4  mt-3 rounded" style={{maxWidth: '400px', margin: 'auto'}}>
             <Card.Body>
                 {quizEnded ? (
                     <div>
@@ -98,8 +98,8 @@ const QuestionContainer = () => {
                         <Card.Text>
                             You have completed the quiz! Click below to see your results.
                         </Card.Text>
-                        <Button onClick={handleShowResults}>Show Results</Button>
-                        <Button onClick={handleRestartQuiz} className="ml-2">Restart Quiz</Button>
+                        <Button variant="success" onClick={handleShowResults}>Show Results</Button>
+                        <Button variant="warning" onClick={handleRestartQuiz} className="ml-2">Restart Quiz</Button>
                     </div>
                 ) : (
                     <div>
@@ -115,9 +115,10 @@ const QuestionContainer = () => {
                                     name="answer"
                                     checked={selectedAnswer === answer}
                                     onChange={() => setSelectedAnswer(answer)}
+                                    className="mb-2"
                                 />
                             ))}
-                            <Button type="submit">Submit Answer</Button>
+                            <Button type="submit" variant="primary">Submit Answer</Button>
                         </Form>
                         {isCorrect !== null && (
                             <div className="mt-2">
@@ -127,9 +128,9 @@ const QuestionContainer = () => {
                                     <p className="text-danger">Incorrect!</p>
                                 )}
                                 {currentQuestion === questions.length - 1 ? (
-                                    <Button onClick={handleNextQuestion}>Finish Quiz</Button>
+                                    <Button onClick={handleNextQuestion} variant="info">Finish Quiz</Button>
                                 ) : (
-                                    <Button onClick={handleNextQuestion}>Next Question</Button>
+                                    <Button onClick={handleNextQuestion} variant="secondary">Next Question</Button>
                                 )}
                             </div>
                         )}
