@@ -13,7 +13,6 @@ const App = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     if (username && password) {
-      // Implement login logic here
       setLoggedIn(true);
     }
   };
