@@ -5,11 +5,11 @@ import he from 'he';
 const LoginForm = ({ username, password, setUsername, setPassword, handleLogin }) => {
     const [usernameError, setUsernameError] = useState('');
     const handleUsernameChange = (value) => {
-        // Sanitize input using he library
+        //Захист від XSS
         const sanitizedUsername = he.encode(value);
         setUsername(sanitizedUsername);
 
-        // Updated validation for English and Ukrainian characters
+        //Валідація для інпуту
         const validCharacters = /^[a-zA-ZА-Яа-яЁёЄєЇїҐґІі0-9]*$/;
         if (!validCharacters.test(value)) {
             setUsernameError('Username must contain only English letters and numbers.');
@@ -24,12 +24,12 @@ const LoginForm = ({ username, password, setUsername, setPassword, handleLogin }
         if (!usernameError && username && password) {
             handleLogin(e);
         } else {
-            // Show error if fields are empty or username is invalid
+            //Показування помилки, якщо поле залишилось пусте
             setUsernameError('Please enter a valid username and password.');
         }
     };
 
-    return (
+    return ( //Реакт-бутстрап 
         <Form onSubmit={handleSubmit}>
             <Form.Group>
                 <Form.Label>Username</Form.Label>
