@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, Button, Form } from 'react-bootstrap';
 import he from 'he';
 
-// Utility function to shuffle an array
+//Була проблема з однаковими варіантами, пофіксила
 const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
