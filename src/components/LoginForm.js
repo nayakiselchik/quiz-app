@@ -10,7 +10,7 @@ const LoginForm = ({ username, password, setUsername, setPassword, handleLogin }
         setUsername(sanitizedUsername);
 
         //Валідація для інпуту
-        const validCharacters = /^[a-zA-ZА-Яа-яЁёЄєЇїҐґІі0-9]*$/;
+        const validCharacters = /^[a-zA-ZА-Яа-яЁёЄєЇїҐґІі0-9.@]*$/;
         if (!validCharacters.test(value)) {
             setUsernameError('Username must contain only English letters and numbers.');
         } else {
