@@ -29,7 +29,7 @@ const LoginForm = ({ username, password, setUsername, setPassword, handleLogin }
         }
     };
 
-    return ( //Реакт-бутстрап 
+    return ( //Реакт-бутстрап
         <Form onSubmit={handleSubmit}>
             <Form.Group>
                 <Form.Label>Username</Form.Label>

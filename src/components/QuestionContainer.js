@@ -2,6 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Card, Button, Form } from 'react-bootstrap';
 import he from 'he';
 
+// Utility function to shuffle an array
+const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+};
+
 const QuestionContainer = () => {
     const [questions, setQuestions] = useState([]);
     const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -23,12 +32,18 @@ const QuestionContainer = () => {
                 throw new Error('Network response was not ok');
             }
             const data = await response.json();
-            const decodedQuestions = data.results.map((question) => ({
-                ...question,
-                question: he.decode(question.question),
-                correct_answer: he.decode(question.correct_answer),
-                incorrect_answers: question.incorrect_answers.map(answer => he.decode(answer)),
-            }));
+            const decodedQuestions = data.results.map((question) => {
+                const shuffledAnswers = shuffleArray([
+                    ...question.incorrect_answers.map(answer => he.decode(answer)),
+                    he.decode(question.correct_answer)
+                ]);
+                return {
+                    ...question,
+                    question: he.decode(question.question),
+                    correct_answer: he.decode(question.correct_answer),
+                    shuffled_answers: shuffledAnswers
+                };
+            });
             setQuestions(decodedQuestions);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -72,8 +87,7 @@ const QuestionContainer = () => {
     }
 
     const currentQuestionData = questions[currentQuestion];
-    const { question, incorrect_answers } = currentQuestionData;
-    const answers = [...incorrect_answers, currentQuestionData.correct_answer];
+    const { question, shuffled_answers } = currentQuestionData;
 
     return (
         <Card>
@@ -92,7 +106,7 @@ const QuestionContainer = () => {
                         <Card.Title>Quiz Question</Card.Title>
                         <Card.Text>{question}</Card.Text>
                         <Form onSubmit={(e) => { e.preventDefault(); handleAnswerSubmit(); }}>
-                            {answers.map((answer, index) => (
+                            {shuffled_answers.map((answer, index) => (
                                 <Form.Check
                                     key={index}
                                     type="radio"
