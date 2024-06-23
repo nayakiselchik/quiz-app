@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Card, Button, Form } from 'react-bootstrap';
 import he from 'he';
 
-//Була проблема з однаковими варіантами, пофіксила
 const shuffleArray = (array) => {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -18,16 +17,22 @@ const QuestionContainer = () => {
     const [isCorrect, setIsCorrect] = useState(null);
     const [quizEnded, setQuizEnded] = useState(false);
     const [correctAnswersCount, setCorrectAnswersCount] = useState(0);
+    const [musicFact, setMusicFact] = useState('');
 
     useEffect(() => {
         fetchQuestions();
+        fetchMusicFact();
+
+        const interval = setInterval(() => {
+            fetchMusicFact();
+        }, 3000);
+
+        return () => clearInterval(interval);
     }, []);
 
     const fetchQuestions = async () => {
         try {
-            const response = await fetch(
-                'https://opentdb.com/api.php?amount=10&category=12'
-            );
+            const response = await fetch('https://opentdb.com/api.php?amount=10&category=12');
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -47,6 +52,19 @@ const QuestionContainer = () => {
             setQuestions(decodedQuestions);
         } catch (error) {
             console.error('Error fetching data:', error);
+        }
+    };
+
+    const fetchMusicFact = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/music-fact');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            setMusicFact(data.fact);
+        } catch (error) {
+            console.error('Error fetching music fact:', error);
         }
     };
 
@@ -90,54 +108,64 @@ const QuestionContainer = () => {
     const { question, shuffled_answers } = currentQuestionData;
 
     return (
-        <Card bg="light" text="dark" className="p-4  mt-3 rounded" style={{maxWidth: '400px', margin: 'auto'}}>
-            <Card.Body>
-                {quizEnded ? (
-                    <div>
-                        <Card.Title>Quiz Ended</Card.Title>
-                        <Card.Text>
-                            You have completed the quiz! Click below to see your results.
-                        </Card.Text>
-                        <Button variant="success" onClick={handleShowResults}>Show Results</Button>
-                        <Button variant="warning" onClick={handleRestartQuiz} className="ml-2">Restart Quiz</Button>
-                    </div>
-                ) : (
-                    <div>
-                        <Card.Title>Quiz Question</Card.Title>
-                        <Card.Text>{question}</Card.Text>
-                        <Form onSubmit={(e) => { e.preventDefault(); handleAnswerSubmit(); }}>
-                            {shuffled_answers.map((answer, index) => (
-                                <Form.Check
-                                    key={index}
-                                    type="radio"
-                                    id={`answer-${index}`}
-                                    label={answer}
-                                    name="answer"
-                                    checked={selectedAnswer === answer}
-                                    onChange={() => setSelectedAnswer(answer)}
-                                    className="mb-2"
-                                />
-                            ))}
-                            <Button type="submit" variant="primary">Submit Answer</Button>
-                        </Form>
-                        {isCorrect !== null && (
-                            <div className="mt-2">
-                                {isCorrect ? (
-                                    <p className="text-success">Correct!</p>
-                                ) : (
-                                    <p className="text-danger">Incorrect!</p>
-                                )}
-                                {currentQuestion === questions.length - 1 ? (
-                                    <Button onClick={handleNextQuestion} variant="info">Finish Quiz</Button>
-                                ) : (
-                                    <Button onClick={handleNextQuestion} variant="secondary">Next Question</Button>
-                                )}
-                            </div>
-                        )}
-                    </div>
-                )}
-            </Card.Body>
-        </Card>
+        <div>
+            <Card bg="light" text="dark" className="p-4 mt-3 rounded" style={{ maxWidth: '400px', margin: 'auto' }}>
+                <Card.Body>
+                    {quizEnded ? (
+                        <div>
+                            <Card.Title>Quiz Ended</Card.Title>
+                            <Card.Text>
+                                You have completed the quiz! Click below to see your results.
+                            </Card.Text>
+                            <Button variant="success" onClick={handleShowResults}>Show Results</Button>
+                            <Button variant="warning" onClick={handleRestartQuiz} className="ml-2">Restart Quiz</Button>
+                        </div>
+                    ) : (
+                        <div>
+                            <Card.Title>Quiz Question</Card.Title>
+                            <Card.Text>{question}</Card.Text>
+                            <Form onSubmit={(e) => { e.preventDefault(); handleAnswerSubmit(); }}>
+                                {shuffled_answers.map((answer, index) => (
+                                    <Form.Check
+                                        key={index}
+                                        type="radio"
+                                        id={`answer-${index}`}
+                                        label={answer}
+                                        name="answer"
+                                        checked={selectedAnswer === answer}
+                                        onChange={() => setSelectedAnswer(answer)}
+                                        className="mb-2"
+                                    />
+                                ))}
+                                <Button type="submit" variant="primary">Submit Answer</Button>
+                            </Form>
+                            {isCorrect !== null && (
+                                <div className="mt-2">
+                                    {isCorrect ? (
+                                        <p className="text-success">Correct!</p>
+                                    ) : (
+                                        <p className="text-danger">Incorrect!</p>
+                                    )}
+                                    {currentQuestion === questions.length - 1 ? (
+                                        <Button onClick={handleNextQuestion} variant="info">Finish Quiz</Button>
+                                    ) : (
+                                        <Button onClick={handleNextQuestion} variant="secondary">Next Question</Button>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </Card.Body>
+            </Card>
+            <div className="music-fact mt-4">
+                <Card bg="light" text="dark" className="p-3 rounded" style={{ maxWidth: '400px', margin: 'auto' }}>
+                    <Card.Body>
+                        <Card.Title>Did You Know?</Card.Title>
+                        <Card.Text>{musicFact}</Card.Text>
+                    </Card.Body>
+                </Card>
+            </div>
+        </div>
     );
 };
 
